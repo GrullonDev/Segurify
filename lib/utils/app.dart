@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:segurify/features/begin.dart';
+import '../features/home/home_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -7,9 +7,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: const Begin(title: 'Flutter Demo Home Page'),
+      title: 'Segurify',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: const ColorScheme.dark(),
+        scaffoldBackgroundColor: const Color(0xFF070B12),
+        useMaterial3: true,
+      ),
+      home: const HomeScreen(),
     );
   }
 }
