@@ -20,7 +20,10 @@ class AdaptiveImage extends StatelessWidget {
     this.semanticLabel,
   });
 
-  bool get _isAsset => source.startsWith('assets/');
+  bool get _isAsset {
+    final uri = Uri.tryParse(source);
+    return source.startsWith('assets/') || uri == null || !uri.hasScheme;
+  }
 
   bool get _isNetwork {
     final uri = Uri.tryParse(source);
@@ -49,6 +52,9 @@ class AdaptiveImage extends StatelessWidget {
         );
   }
 
+  String get _assetKey =>
+      source.startsWith('assets/') ? source.substring(7) : source;
+
   @override
   Widget build(BuildContext context) {
     if (source.isEmpty) {
@@ -57,7 +63,7 @@ class AdaptiveImage extends StatelessWidget {
 
     if (_isAsset) {
       return Image.asset(
-        source,
+        _assetKey,
         width: width,
         height: height,
         fit: fit,
@@ -87,7 +93,7 @@ class AdaptiveImage extends StatelessWidget {
     }
 
     return Image.asset(
-      source,
+      _assetKey,
       width: width,
       height: height,
       fit: fit,

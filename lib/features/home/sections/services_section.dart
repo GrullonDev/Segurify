@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../config/site_config.dart';
+import '../../../widgets/adaptive_image.dart';
 
 class ServicesSection extends StatelessWidget {
   final SiteConfig config;
@@ -21,62 +22,93 @@ class ServicesSection extends StatelessWidget {
     return Container(
       key: sectionKey,
       color: const Color(0xFF080D18),
-      padding: EdgeInsets.symmetric(
-        vertical: 100,
-        horizontal: isWide ? 80 : 24,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Text(
-            'Soluciones de Seguridad Especializadas',
-            style: GoogleFonts.sora(
-              color: Colors.white,
-              fontSize: isWide ? 36 : 26,
-              fontWeight: FontWeight.w700,
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.18,
+              child: AdaptiveImage(
+                source: config.sectionBackgroundImage,
+                fit: BoxFit.cover,
+                placeholder: Container(color: const Color(0xFF080D18)),
+              ),
             ),
           ),
-          const SizedBox(height: 12),
-          Text(
-            'Diseñamos arquitecturas de vigilancia adaptadas a cada entorno, '
-            'utilizando hardware de grado industrial y conectividad en la nube.',
-            style: GoogleFonts.inter(
-              color: const Color(0xFF8892A4),
-              fontSize: 15,
-              height: 1.6,
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    const Color(0xFF080D18).withValues(alpha: 0.96),
+                    const Color(0xFF080D18).withValues(alpha: 0.90),
+                    const Color(0xFF080D18).withValues(alpha: 0.98),
+                  ],
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 64),
-          if (isWide)
-            Row(
+          Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: 100,
+              horizontal: isWide ? 80 : 24,
+            ),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: config.services
-                  .map(
-                    (s) => Expanded(
-                      child: _ServiceCard(
-                        service: s,
-                        accent: config.accentColor,
-                        onContactTap: onContactTap,
-                      ),
-                    ),
+              children: [
+                Text(
+                  'Soluciones de Seguridad Especializadas',
+                  style: GoogleFonts.sora(
+                    color: Colors.white,
+                    fontSize: isWide ? 36 : 26,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'DiseÃ±amos arquitecturas de vigilancia adaptadas a cada entorno, '
+                  'utilizando hardware de grado industrial y conectividad en la nube.',
+                  style: GoogleFonts.inter(
+                    color: const Color(0xFF8892A4),
+                    fontSize: 15,
+                    height: 1.6,
+                  ),
+                ),
+                const SizedBox(height: 64),
+                if (isWide)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: config.services
+                        .map(
+                          (s) => Expanded(
+                            child: _ServiceCard(
+                              service: s,
+                              accent: config.accentColor,
+                              onContactTap: onContactTap,
+                            ),
+                          ),
+                        )
+                        .toList(),
                   )
-                  .toList(),
-            )
-          else
-            Column(
-              children: config.services
-                  .map(
-                    (s) => Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: _ServiceCard(
-                        service: s,
-                        accent: config.accentColor,
-                        onContactTap: onContactTap,
-                      ),
-                    ),
-                  )
-                  .toList(),
+                else
+                  Column(
+                    children: config.services
+                        .map(
+                          (s) => Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: _ServiceCard(
+                              service: s,
+                              accent: config.accentColor,
+                              onContactTap: onContactTap,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+              ],
             ),
+          ),
         ],
       ),
     );
@@ -306,7 +338,7 @@ class _ServiceDetailDialog extends StatelessWidget {
                     elevation: 0,
                   ),
                   child: Text(
-                    'Solicitar cotización',
+                    'Solicitar cotizaciÃ³n',
                     style: GoogleFonts.sora(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,

@@ -52,6 +52,7 @@ class SiteConfig {
   final String heroTitle;
   final String heroSubtitle;
   final String heroBackgroundImage;
+  final String sectionBackgroundImage;
   final Color accentColor;
   final List<ServiceItem> services;
   final List<ProjectItem> projects;
@@ -66,7 +67,8 @@ class SiteConfig {
     this.heroSubtitle =
         'Instalación profesional de sistemas de vigilancia para hogares y empresas. '
         'Seguridad inteligente, control total y monitoreo en tiempo real desde cualquier lugar.',
-    this.heroBackgroundImage = 'assets/circuit.jpg',
+    this.heroBackgroundImage = 'assets/circuit.webp',
+    this.sectionBackgroundImage = 'assets/installation_camera.webp',
     this.accentColor = const Color(0xFFFF6820),
     this.services = const [
       ServiceItem(
@@ -321,6 +323,7 @@ class SiteConfig {
     String? heroTitle,
     String? heroSubtitle,
     String? heroBackgroundImage,
+    String? sectionBackgroundImage,
     Color? accentColor,
     List<ServiceItem>? services,
     List<ProjectItem>? projects,
@@ -333,6 +336,7 @@ class SiteConfig {
     heroTitle: heroTitle ?? this.heroTitle,
     heroSubtitle: heroSubtitle ?? this.heroSubtitle,
     heroBackgroundImage: heroBackgroundImage ?? this.heroBackgroundImage,
+    sectionBackgroundImage: sectionBackgroundImage ?? this.sectionBackgroundImage,
     accentColor: accentColor ?? this.accentColor,
     services: services ?? this.services,
     projects: projects ?? this.projects,

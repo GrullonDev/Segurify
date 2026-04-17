@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../config/site_config.dart';
+import '../../../widgets/adaptive_image.dart';
 
 class ProcessSection extends StatelessWidget {
   final SiteConfig config;
@@ -12,19 +13,19 @@ class ProcessSection extends StatelessWidget {
       number: '1',
       title: 'Consulta gratuita',
       description:
-          'Evaluamos tu propiedad y diseñamos un plan de seguridad personalizado sin compromiso.',
+          'Evaluamos tu propiedad y diseÃ±amos un plan de seguridad personalizado sin compromiso.',
     ),
     (
       number: '2',
-      title: 'Instalación experta',
+      title: 'InstalaciÃ³n experta',
       description:
-          'Técnicos certificados realizan el montaje y configuración optimizando cada ángulo de visión.',
+          'TÃ©cnicos certificados realizan el montaje y configuraciÃ³n optimizando cada Ã¡ngulo de visiÃ³n.',
     ),
     (
       number: '3',
       title: 'Soporte 24/7',
       description:
-          'Acompañamiento continuo y respuesta rápida ante cualquier incidencia técnica.',
+          'AcompaÃ±amiento continuo y respuesta rÃ¡pida ante cualquier incidencia tÃ©cnica.',
     ),
   ];
 
@@ -34,41 +35,95 @@ class ProcessSection extends StatelessWidget {
 
     return Container(
       color: const Color(0xFF080D18),
-      padding: EdgeInsets.symmetric(
-        vertical: 100,
-        horizontal: isWide ? 80 : 24,
-      ),
-      child: isWide
-          ? Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: _steps.asMap().entries.map((e) {
-                return Expanded(
-                  child: _StepCard(
-                    number: e.value.number,
-                    title: e.value.title,
-                    description: e.value.description,
-                    accent: config.accentColor,
-                    showConnector: e.key < _steps.length - 1,
-                  ),
-                );
-              }).toList(),
-            )
-          : Column(
-              children: _steps
-                  .map(
-                    (s) => Padding(
-                      padding: const EdgeInsets.only(bottom: 40),
-                      child: _StepCard(
-                        number: s.number,
-                        title: s.title,
-                        description: s.description,
-                        accent: config.accentColor,
-                        showConnector: false,
-                      ),
-                    ),
-                  )
-                  .toList(),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.15,
+              child: AdaptiveImage(
+                source: config.sectionBackgroundImage,
+                fit: BoxFit.cover,
+                placeholder: Container(color: const Color(0xFF080D18)),
+              ),
             ),
+          ),
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    const Color(0xFF080D18).withValues(alpha: 0.90),
+                    const Color(0xFF080D18).withValues(alpha: 0.96),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: 100,
+              horizontal: isWide ? 80 : 24,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Nuestro Proceso',
+                  style: GoogleFonts.sora(
+                    color: Colors.white,
+                    fontSize: isWide ? 34 : 26,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Un flujo claro para pasar de la evaluación al sistema funcionando sin fricción.',
+                  style: GoogleFonts.inter(
+                    color: const Color(0xFF8892A4),
+                    fontSize: 15,
+                    height: 1.6,
+                  ),
+                ),
+                const SizedBox(height: 64),
+                if (isWide)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _steps.asMap().entries.map((e) {
+                      return Expanded(
+                        child: _StepCard(
+                          number: e.value.number,
+                          title: e.value.title,
+                          description: e.value.description,
+                          accent: config.accentColor,
+                          showConnector: e.key < _steps.length - 1,
+                        ),
+                      );
+                    }).toList(),
+                  )
+                else
+                  Column(
+                    children: _steps
+                        .map(
+                          (s) => Padding(
+                            padding: const EdgeInsets.only(bottom: 40),
+                            child: _StepCard(
+                              number: s.number,
+                              title: s.title,
+                              description: s.description,
+                              accent: config.accentColor,
+                              showConnector: false,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
