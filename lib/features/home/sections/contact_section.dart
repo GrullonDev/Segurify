@@ -150,12 +150,16 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, color: accent, size: 18),
         const SizedBox(width: 12),
-        Text(
-          text,
-          style: GoogleFonts.inter(color: Colors.white70, fontSize: 14),
+        Expanded(
+          child: Text(
+            text,
+            softWrap: true,
+            style: GoogleFonts.inter(color: Colors.white70, fontSize: 14),
+          ),
         ),
       ],
     );

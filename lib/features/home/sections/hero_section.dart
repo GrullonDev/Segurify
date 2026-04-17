@@ -1,34 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../config/site_config.dart';
+import '../../../widgets/adaptive_image.dart';
 
 class HeroSection extends StatelessWidget {
   final SiteConfig config;
   final GlobalKey sectionKey;
+  final VoidCallback onCotizaTap;
+  final VoidCallback onVerSistemasTap;
 
   const HeroSection({
     super.key,
     required this.config,
     required this.sectionKey,
+    required this.onCotizaTap,
+    required this.onVerSistemasTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isWide = size.width > 900;
+    final isCompact = size.width < 600;
+    final heroTitleSize = isWide ? 58.0 : (isCompact ? 34.0 : 44.0);
+    final heroPadding = isWide ? 80.0 : (isCompact ? 20.0 : 28.0);
+    final heroHeight = isWide
+        ? (size.height * 0.95).clamp(640.0, 900.0)
+        : (size.height * 1.05).clamp(720.0, 980.0);
 
-    return Container(
+    return SizedBox(
       key: sectionKey,
-      height: size.height - 70,
-      constraints: const BoxConstraints(minHeight: 600),
+      width: double.infinity,
+      height: heroHeight,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.network(
-            config.heroBackgroundImage,
+          AdaptiveImage(
+            source: config.heroBackgroundImage,
             fit: BoxFit.cover,
-            errorBuilder: (context, err, stack) =>
-                Container(color: const Color(0xFF070B12)),
+            placeholder: Container(color: const Color(0xFF070B12)),
           ),
           Container(
             decoration: BoxDecoration(
@@ -62,13 +72,17 @@ class HeroSection extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: isWide ? 80 : 24),
+            padding: EdgeInsets.symmetric(
+              horizontal: heroPadding,
+              vertical: isCompact ? 72 : 96,
+            ),
             child: Align(
               alignment:
                   isWide ? Alignment.centerLeft : Alignment.center,
               child: ConstrainedBox(
-                constraints:
-                    BoxConstraints(maxWidth: isWide ? 620 : double.infinity),
+                constraints: BoxConstraints(
+                  maxWidth: isWide ? 620 : double.infinity,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: isWide
@@ -102,7 +116,7 @@ class HeroSection extends StatelessWidget {
                       config.heroTitle,
                       style: GoogleFonts.sora(
                         color: Colors.white,
-                        fontSize: isWide ? 58 : 36,
+                        fontSize: heroTitleSize,
                         fontWeight: FontWeight.w800,
                         height: 1.1,
                       ),
@@ -129,7 +143,7 @@ class HeroSection extends StatelessWidget {
                           : WrapAlignment.center,
                       children: [
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: onCotizaTap,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: config.accentColor,
                             padding: const EdgeInsets.symmetric(
@@ -151,7 +165,7 @@ class HeroSection extends StatelessWidget {
                           ),
                         ),
                         OutlinedButton(
-                          onPressed: () {},
+                          onPressed: onVerSistemasTap,
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color(0xFF3A4A5C)),
                             padding: const EdgeInsets.symmetric(

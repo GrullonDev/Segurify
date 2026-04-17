@@ -6,12 +6,14 @@ class NavBar extends StatelessWidget {
   final SiteConfig config;
   final List<({String label, GlobalKey sectionKey})> sections;
   final VoidCallback onEditTap;
+  final VoidCallback onCotizaTap;
 
   const NavBar({
     super.key,
     required this.config,
     required this.sections,
     required this.onEditTap,
+    required this.onCotizaTap,
   });
 
   void _scrollTo(GlobalKey key) {
@@ -62,7 +64,7 @@ class NavBar extends StatelessWidget {
               _CtaButton(
                 label: 'Solicitar Cotización',
                 color: config.accentColor,
-                onTap: () {},
+                onTap: onCotizaTap,
               ),
             ],
             const SizedBox(width: 16),
