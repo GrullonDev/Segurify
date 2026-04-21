@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../config/site_config.dart';
-import 'sections/nav_bar.dart';
-import 'sections/hero_section.dart';
-import 'sections/services_section.dart';
-import 'sections/portfolio_section.dart';
-import 'sections/process_section.dart';
-import 'sections/contact_section.dart';
-import 'sections/footer_section.dart';
-import 'widgets/edit_panel.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:segurify/config/site_config.dart';
+import 'package:segurify/core/design_system.dart';
+import 'package:segurify/features/home/sections/nav_bar.dart';
+import 'package:segurify/features/home/sections/hero_section.dart';
+import 'package:segurify/features/home/sections/services_section.dart';
+import 'package:segurify/features/home/sections/portfolio_section.dart';
+import 'package:segurify/features/home/sections/process_section.dart';
+import 'package:segurify/features/home/sections/contact_section.dart';
+import 'package:segurify/features/home/sections/footer_section.dart';
+import 'package:segurify/features/home/widgets/edit_panel.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -71,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFF070B12),
+      backgroundColor: DesignSystem.background,
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -115,35 +117,16 @@ class _HomeScreenState extends State<HomeScreen> {
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            bottom: _showBackToTop ? 32 : -64,
+            bottom: _showBackToTop ? 32 : -100,
             right: 32,
             child: AnimatedOpacity(
               duration: const Duration(milliseconds: 300),
               opacity: _showBackToTop ? 1.0 : 0.0,
-              child: Tooltip(
-                message: 'Volver al inicio',
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: _scrollToTop,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1A2535),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: const Color(0xFF3A4A5C)),
-                      ),
-                      child: const Icon(
-                        Icons.keyboard_arrow_up_rounded,
-                        color: Colors.white70,
-                        size: 22,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              child: FloatingActionButton.small(
+                onPressed: _scrollToTop,
+                backgroundColor: DesignSystem.accent,
+                child: const Icon(Icons.arrow_upward_rounded, color: Colors.white),
+              ).animate().scale(),
             ),
           ),
           if (_editOpen)

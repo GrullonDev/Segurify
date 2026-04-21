@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../../config/site_config.dart';
-import '../../../widgets/adaptive_image.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:segurify/config/site_config.dart';
+import 'package:segurify/core/design_system.dart';
+import 'package:segurify/widgets/adaptive_image.dart';
 
 class HeroSection extends StatelessWidget {
   final SiteConfig config;
@@ -22,187 +23,222 @@ class HeroSection extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final isWide = size.width > 900;
     final isCompact = size.width < 600;
-    final heroTitleSize = isWide ? 58.0 : (isCompact ? 34.0 : 44.0);
-    final heroPadding = isWide ? 80.0 : (isCompact ? 20.0 : 28.0);
 
     return Container(
       key: sectionKey,
       width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            const Color(0xFF070B12),
-            const Color(0xFF070B12).withValues(alpha: 0.98),
-            const Color(0xFF080D18),
-          ],
-        ),
+      decoration: const BoxDecoration(
+        color: DesignSystem.background,
       ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: heroPadding,
-          vertical: isCompact ? 24 : 40,
-        ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final stacked = constraints.maxWidth < 900;
-
-            final imagePanel = ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: AspectRatio(
-                aspectRatio: stacked ? 16 / 11 : 4 / 3,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    AdaptiveImage(
-                      source: config.heroBackgroundImage,
-                      fit: BoxFit.cover,
-                      placeholder:
-                          Container(color: const Color(0xFF0D1622)),
-                    ),
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            const Color(0xFF070B12).withValues(alpha: 0.18),
-                            const Color(0xFF070B12).withValues(alpha: 0.55),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+      child: Stack(
+        children: [
+          // Background Glow
+          Positioned(
+            top: -200,
+            right: -200,
+            child: Container(
+              width: 600,
+              height: 600,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: DesignSystem.accent.withOpacity(0.05),
               ),
-            );
+            ).animate(onPlay: (controller) => controller.repeat(reverse: true))
+             .scale(begin: const Offset(1, 1), end: const Offset(1.2, 1.2), duration: 4.seconds),
+          ),
+          
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: isWide ? 80 : 24,
+              vertical: isCompact ? 40 : 100,
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final stacked = constraints.maxWidth < 900;
 
-            final textBlock = Column(
-              crossAxisAlignment: stacked
-                  ? CrossAxisAlignment.center
-                  : CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: config.accentColor.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(
-                      color: config.accentColor.withValues(alpha: 0.4),
-                    ),
-                  ),
-                  child: Text(
-                    config.tagline,
-                    style: GoogleFonts.sora(
-                      color: config.accentColor,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  config.heroTitle,
-                  style: GoogleFonts.sora(
-                    color: Colors.white,
-                    fontSize: heroTitleSize,
-                    fontWeight: FontWeight.w800,
-                    height: 1.08,
-                  ),
-                  textAlign: stacked ? TextAlign.center : TextAlign.left,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  config.heroSubtitle,
-                  style: GoogleFonts.inter(
-                    color: const Color(0xFF8892A4),
-                    fontSize: isWide ? 16 : 14,
-                    height: 1.7,
-                  ),
-                  textAlign: stacked ? TextAlign.center : TextAlign.left,
-                ),
-                const SizedBox(height: 32),
-                Wrap(
-                  spacing: 16,
-                  runSpacing: 12,
-                  alignment:
-                      stacked ? WrapAlignment.center : WrapAlignment.start,
+                final textBlock = Column(
+                  crossAxisAlignment: stacked ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    ElevatedButton(
-                      onPressed: onCotizaTap,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: config.accentColor,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 28,
-                          vertical: 16,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        elevation: 0,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: DesignSystem.accent.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(color: DesignSystem.accent.withOpacity(0.2)),
                       ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.verified_user_rounded, color: DesignSystem.accent, size: 14),
+                          const SizedBox(width: 8),
+                          Text(
+                            config.tagline,
+                            style: DesignSystem.label,
+                          ),
+                        ],
+                      ),
+                    ).animate().fadeIn(duration: 800.ms).slideX(begin: -0.2),
+                    const SizedBox(height: 32),
+                    ShaderMask(
+                      shaderCallback: (bounds) => const LinearGradient(
+                        colors: [Colors.white, Color(0xFF94A3B8)],
+                      ).createShader(bounds),
                       child: Text(
-                        'Cotiza tu Instalación',
-                        style: GoogleFonts.sora(
+                        config.heroTitle,
+                        style: DesignSystem.h1.copyWith(
+                          fontSize: isWide ? 56 : 36,
                           color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
                         ),
+                        textAlign: stacked ? TextAlign.center : TextAlign.left,
                       ),
-                    ),
-                    OutlinedButton(
-                      onPressed: onVerSistemasTap,
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFF3A4A5C)),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 28,
-                          vertical: 16,
+                    ).animate().fadeIn(delay: 200.ms, duration: 800.ms).slideY(begin: 0.2),
+                    const SizedBox(height: 24),
+                    Text(
+                      config.heroSubtitle,
+                      style: DesignSystem.bodyLarge,
+                      textAlign: stacked ? TextAlign.center : TextAlign.left,
+                    ).animate().fadeIn(delay: 400.ms, duration: 800.ms),
+                    const SizedBox(height: 48),
+                    Wrap(
+                      spacing: 20,
+                      runSpacing: 16,
+                      alignment: stacked ? WrapAlignment.center : WrapAlignment.start,
+                      children: [
+                        _HeroButton(
+                          label: 'Cotiza tu Instalación',
+                          isPrimary: true,
+                          onTap: onCotizaTap,
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
+                        _HeroButton(
+                          label: 'Ver Sistemas',
+                          isPrimary: false,
+                          onTap: onVerSistemasTap,
                         ),
-                      ),
-                      child: Text(
-                        'Ver Sistemas',
-                        style: GoogleFonts.sora(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
+                      ],
+                    ).animate().fadeIn(delay: 600.ms, duration: 800.ms),
                   ],
-                ),
-              ],
-            );
+                );
 
-            if (stacked) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  imagePanel,
-                  const SizedBox(height: 28),
-                  textBlock,
-                ],
-              );
-            }
+                final imagePanel = Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: DesignSystem.accent.withOpacity(0.2),
+                        blurRadius: 40,
+                        offset: const Offset(0, 20),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: Stack(
+                      children: [
+                        AdaptiveImage(
+                          source: config.heroBackgroundImage,
+                          height: isWide ? 500 : 300,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  DesignSystem.background.withOpacity(0.6),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ).animate(onPlay: (controller) => controller.repeat(reverse: true))
+                 .moveY(begin: 0, end: -15, duration: 3.seconds, curve: Curves.easeInOut)
+                 .animate().scale(delay: 400.ms, duration: 800.ms, curve: Curves.easeOutBack);
 
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(child: textBlock),
-                const SizedBox(width: 40),
-                Expanded(child: imagePanel),
-              ],
-            );
-          },
+                if (stacked) {
+                  return Column(
+                    children: [
+                      imagePanel,
+                      const SizedBox(height: 60),
+                      textBlock,
+                    ],
+                  );
+                }
+
+                return Row(
+                  children: [
+                    Expanded(flex: 6, child: textBlock),
+                    const SizedBox(width: 60),
+                    Expanded(flex: 5, child: imagePanel),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeroButton extends StatefulWidget {
+  final String label;
+  final bool isPrimary;
+  final VoidCallback onTap;
+
+  const _HeroButton({
+    required this.label,
+    required this.isPrimary,
+    required this.onTap,
+  });
+
+  @override
+  State<_HeroButton> createState() => _HeroButtonState();
+}
+
+class _HeroButtonState extends State<_HeroButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: AnimatedScale(
+        scale: _hovered ? 1.05 : 1.0,
+        duration: 200.ms,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: widget.isPrimary && !_hovered ? DesignSystem.primaryGradient : null,
+            color: !widget.isPrimary || _hovered ? (widget.isPrimary ? Colors.white : Colors.white.withOpacity(0.05)) : null,
+            border: !widget.isPrimary ? Border.all(color: Colors.white.withOpacity(0.1)) : null,
+          ),
+          child: ElevatedButton(
+            onPressed: widget.onTap,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              foregroundColor: widget.isPrimary && !_hovered ? Colors.white : (widget.isPrimary ? DesignSystem.accent : Colors.white),
+              shadowColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: Text(
+              widget.label,
+              style: DesignSystem.bodyMedium.copyWith(
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+                color: widget.isPrimary && !_hovered ? Colors.white : (widget.isPrimary ? DesignSystem.accent : Colors.white),
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../../config/site_config.dart';
-import '../../../widgets/adaptive_image.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:segurify/config/site_config.dart';
+import 'package:segurify/core/design_system.dart';
 
 class ProcessSection extends StatelessWidget {
   final SiteConfig config;
@@ -10,22 +10,25 @@ class ProcessSection extends StatelessWidget {
 
   static const _steps = [
     (
-      number: '1',
-      title: 'Consulta gratuita',
+      number: '01',
+      title: 'CONSULTA GRATUITA',
       description:
-          'Evaluamos tu propiedad y diseÃ±amos un plan de seguridad personalizado sin compromiso.',
+          'Evaluamos tu propiedad y diseñamos un plan de seguridad personalizado sin compromiso.',
+      icon: Icons.chat_bubble_outline_rounded,
     ),
     (
-      number: '2',
-      title: 'InstalaciÃ³n experta',
+      number: '02',
+      title: 'INSTALACIÓN EXPERTA',
       description:
-          'TÃ©cnicos certificados realizan el montaje y configuraciÃ³n optimizando cada Ã¡ngulo de visiÃ³n.',
+          'Técnicos certificados realizan el montaje y configuración optimizando cada ángulo de visión.',
+      icon: Icons.on_device_training_rounded,
     ),
     (
-      number: '3',
-      title: 'Soporte 24/7',
+      number: '03',
+      title: 'SOPORTE 24/7',
       description:
-          'AcompaÃ±amiento continuo y respuesta rÃ¡pida ante cualquier incidencia tÃ©cnica.',
+          'Acompañamiento continuo y respuesta rápida ante cualquier incidencia técnica.',
+      icon: Icons.support_agent_rounded,
     ),
   ];
 
@@ -34,114 +37,56 @@ class ProcessSection extends StatelessWidget {
     final isWide = MediaQuery.of(context).size.width > 900;
 
     return Container(
-      color: const Color(0xFF080D18),
-      child: Stack(
+      color: DesignSystem.background,
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        vertical: 120,
+        horizontal: isWide ? 80 : 24,
+      ),
+      child: Column(
         children: [
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.15,
-              child: AdaptiveImage(
-                source: config.sectionBackgroundImage,
-                fit: BoxFit.cover,
-                placeholder: Container(color: const Color(0xFF080D18)),
-              ),
-            ),
-          ),
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    const Color(0xFF080D18).withValues(alpha: 0.90),
-                    const Color(0xFF080D18).withValues(alpha: 0.96),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: 100,
-              horizontal: isWide ? 80 : 24,
-            ),
-            child: Column(
+          Text(
+            'PROCESO',
+            style: DesignSystem.label,
+          ).animate().fadeIn(),
+          const SizedBox(height: 16),
+          Text(
+            'Cómo Trabajamos',
+            style: DesignSystem.h2,
+            textAlign: TextAlign.center,
+          ).animate().fadeIn(delay: 200.ms),
+          const SizedBox(height: 80),
+          
+          if (isWide)
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Nuestro Proceso',
-                  style: GoogleFonts.sora(
-                    color: Colors.white,
-                    fontSize: isWide ? 34 : 26,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Un flujo claro para pasar de la evaluación al sistema funcionando sin fricción.',
-                  style: GoogleFonts.inter(
-                    color: const Color(0xFF8892A4),
-                    fontSize: 15,
-                    height: 1.6,
-                  ),
-                ),
-                const SizedBox(height: 64),
-                if (isWide)
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: _steps.asMap().entries.map((e) {
-                      return Expanded(
-                        child: _StepCard(
-                          number: e.value.number,
-                          title: e.value.title,
-                          description: e.value.description,
-                          accent: config.accentColor,
-                          showConnector: e.key < _steps.length - 1,
-                        ),
-                      );
-                    }).toList(),
-                  )
-                else
-                  Column(
-                    children: _steps
-                        .map(
-                          (s) => Padding(
-                            padding: const EdgeInsets.only(bottom: 40),
-                            child: _StepCard(
-                              number: s.number,
-                              title: s.title,
-                              description: s.description,
-                              accent: config.accentColor,
-                              showConnector: false,
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  ),
-              ],
+              children: _steps.asMap().entries.map((e) {
+                return Expanded(
+                  child: _ProcessStep(
+                    step: e.value,
+                    isLast: e.key == _steps.length - 1,
+                  ).animate().fadeIn(delay: (400 + e.key * 200).ms).slideX(begin: 0.1),
+                );
+              }).toList(),
+            )
+          else
+            Column(
+              children: _steps.map((s) => Padding(
+                padding: const EdgeInsets.only(bottom: 60),
+                child: _ProcessStep(step: s, isLast: true),
+              )).toList(),
             ),
-          ),
         ],
       ),
     );
   }
 }
 
-class _StepCard extends StatelessWidget {
-  final String number;
-  final String title;
-  final String description;
-  final Color accent;
-  final bool showConnector;
+class _ProcessStep extends StatelessWidget {
+  final ({String number, String title, String description, IconData icon}) step;
+  final bool isLast;
 
-  const _StepCard({
-    required this.number,
-    required this.title,
-    required this.description,
-    required this.accent,
-    required this.showConnector,
-  });
+  const _ProcessStep({required this.step, required this.isLast});
 
   @override
   Widget build(BuildContext context) {
@@ -152,58 +97,72 @@ class _StepCard extends StatelessWidget {
           Stack(
             alignment: Alignment.center,
             children: [
-              if (showConnector)
-                Positioned.fill(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: FractionallySizedBox(
-                      widthFactor: 0.5,
-                      child: Container(
-                        height: 1,
-                        color: const Color(0xFF1A2535),
+              if (!isLast)
+                Positioned(
+                  left: 60,
+                  right: -60,
+                  top: 40,
+                  child: Container(
+                    height: 2,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          DesignSystem.accent.withOpacity(0.5),
+                          DesignSystem.accent.withOpacity(0.0),
+                        ],
                       ),
                     ),
                   ),
                 ),
               Container(
-                width: 56,
-                height: 56,
+                width: 80,
+                height: 80,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0D1622),
-                  border: Border.all(color: const Color(0xFF1A2535)),
-                  borderRadius: BorderRadius.circular(12),
+                  color: DesignSystem.surface,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: DesignSystem.accent.withOpacity(0.3), width: 2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: DesignSystem.accent.withOpacity(0.1),
+                      blurRadius: 20,
+                    ),
+                  ],
                 ),
                 child: Center(
+                  child: Icon(step.icon, color: DesignSystem.accent, size: 32),
+                ),
+              ),
+              Positioned(
+                right: 0,
+                top: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: const BoxDecoration(
+                    color: DesignSystem.accent,
+                    shape: BoxShape.circle,
+                  ),
                   child: Text(
-                    number,
-                    style: GoogleFonts.sora(
+                    step.number,
+                    style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           Text(
-            title,
-            style: GoogleFonts.sora(
-              color: Colors.white,
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-            ),
+            step.title,
+            style: DesignSystem.h3.copyWith(fontSize: 18),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           Text(
-            description,
-            style: GoogleFonts.inter(
-              color: const Color(0xFF8892A4),
-              fontSize: 14,
-              height: 1.6,
-            ),
+            step.description,
+            style: DesignSystem.bodyMedium,
             textAlign: TextAlign.center,
           ),
         ],

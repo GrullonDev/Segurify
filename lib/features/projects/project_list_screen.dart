@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../config/site_config.dart';
-import '../../widgets/adaptive_image.dart';
+import 'package:segurify/config/site_config.dart';
+import 'package:segurify/widgets/adaptive_image.dart';
 
 class ProjectListScreen extends StatefulWidget {
   final String category;

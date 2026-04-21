@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:segurify/core/design_system.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../config/site_config.dart';
+import 'package:segurify/config/site_config.dart';
 
 // ─── Country model ────────────────────────────────────────────────────────────
 
@@ -63,58 +65,70 @@ class _ContactSectionState extends State<ContactSection> {
 
     return Container(
       key: widget.sectionKey,
-      color: const Color(0xFF070B12),
+      color: DesignSystem.background,
       padding: EdgeInsets.symmetric(
-        vertical: 100,
+        vertical: 120,
         horizontal: isWide ? 80 : 24,
       ),
-      child: Container(
-        padding: EdgeInsets.all(isWide ? 60 : 32),
-        decoration: BoxDecoration(
-          color: const Color(0xFF0D1622),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFF1A2535)),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Container(
+            padding: EdgeInsets.all(isWide ? 80 : 32),
+            decoration: BoxDecoration(
+              color: DesignSystem.surface,
+              borderRadius: BorderRadius.circular(32),
+              border: Border.all(color: Colors.white.withOpacity(0.05)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 40,
+                  offset: const Offset(0, 20),
+                ),
+              ],
+            ),
+            child: isWide
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 5,
+                        child: _ContactInfo(config: widget.config),
+                      ),
+                      const SizedBox(width: 80),
+                      Expanded(
+                        flex: 6,
+                        child: _ContactForm(
+                          nameCtrl: _nameCtrl,
+                          emailCtrl: _emailCtrl,
+                          phoneCtrl: _phoneCtrl,
+                          accent: widget.config.accentColor,
+                          selectedCountry: _selectedCountry,
+                          onCountryChanged: (c) =>
+                              setState(() => _selectedCountry = c),
+                        ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    children: [
+                      _ContactInfo(config: widget.config),
+                      const SizedBox(height: 60),
+                      _ContactForm(
+                        nameCtrl: _nameCtrl,
+                        emailCtrl: _emailCtrl,
+                        phoneCtrl: _phoneCtrl,
+                        accent: widget.config.accentColor,
+                        selectedCountry: _selectedCountry,
+                        onCountryChanged: (c) =>
+                            setState(() => _selectedCountry = c),
+                      ),
+                    ],
+                  ),
+          ),
         ),
-        child: isWide
-            ? Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: _ContactInfo(config: widget.config),
-                  ),
-                  const SizedBox(width: 60),
-                  Expanded(
-                    flex: 6,
-                    child: _ContactForm(
-                      nameCtrl: _nameCtrl,
-                      emailCtrl: _emailCtrl,
-                      phoneCtrl: _phoneCtrl,
-                      accent: widget.config.accentColor,
-                      selectedCountry: _selectedCountry,
-                      onCountryChanged: (c) =>
-                          setState(() => _selectedCountry = c),
-                    ),
-                  ),
-                ],
-              )
-            : Column(
-                children: [
-                  _ContactInfo(config: widget.config),
-                  const SizedBox(height: 48),
-                  _ContactForm(
-                    nameCtrl: _nameCtrl,
-                    emailCtrl: _emailCtrl,
-                    phoneCtrl: _phoneCtrl,
-                    accent: widget.config.accentColor,
-                    selectedCountry: _selectedCountry,
-                    onCountryChanged: (c) =>
-                        setState(() => _selectedCountry = c),
-                  ),
-                ],
-              ),
       ),
-    );
+    ).animate().fadeIn(duration: 800.ms);
   }
 }
 
@@ -129,50 +143,53 @@ class _ContactInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '¿Listo para blindar\ntu espacio?',
-          style: GoogleFonts.sora(
-            color: Colors.white,
-            fontSize: 28,
-            fontWeight: FontWeight.w700,
-            height: 1.3,
-          ),
-        ),
-        const SizedBox(height: 16),
+        Text('¿LISTO PARA BLINDAR\nTU ESPACIO?', style: DesignSystem.h2),
+        const SizedBox(height: 24),
         Text(
           'Completa el formulario y te contactamos directamente '
           'por WhatsApp en menos de 24 horas.',
-          style: GoogleFonts.inter(
-            color: const Color(0xFF8892A4),
-            fontSize: 14,
-            height: 1.6,
-          ),
+          style: DesignSystem.bodyMedium,
         ),
-        const SizedBox(height: 40),
-        _InfoRow(icon: Icons.phone_outlined, text: config.phone, accent: config.accentColor),
-        const SizedBox(height: 16),
-        _InfoRow(icon: Icons.email_outlined, text: config.email, accent: config.accentColor),
-        const SizedBox(height: 16),
-        _InfoRow(icon: Icons.location_on_outlined, text: config.address, accent: config.accentColor),
-        const SizedBox(height: 32),
+        const SizedBox(height: 48),
+        _InfoRow(
+          icon: Icons.phone_outlined,
+          text: config.phone,
+          accent: DesignSystem.accent,
+        ),
+        const SizedBox(height: 24),
+        _InfoRow(
+          icon: Icons.email_outlined,
+          text: config.email,
+          accent: DesignSystem.accent,
+        ),
+        const SizedBox(height: 24),
+        _InfoRow(
+          icon: Icons.location_on_outlined,
+          text: config.address,
+          accent: DesignSystem.accent,
+        ),
+        const SizedBox(height: 48),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           decoration: BoxDecoration(
-            color: const Color(0xFF25D366).withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFF25D366).withValues(alpha: 0.3)),
+            color: const Color(0xFF25D366).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFF25D366).withOpacity(0.3)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.chat_rounded, color: Color(0xFF25D366), size: 16),
-              const SizedBox(width: 8),
+              const Icon(
+                Icons.chat_rounded,
+                color: Color(0xFF25D366),
+                size: 18,
+              ),
+              const SizedBox(width: 12),
               Text(
-                'Respuesta vía WhatsApp',
-                style: GoogleFonts.sora(
+                'Respuesta rápida vía WhatsApp',
+                style: DesignSystem.bodySmall.copyWith(
                   color: const Color(0xFF25D366),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
@@ -188,7 +205,11 @@ class _InfoRow extends StatelessWidget {
   final String text;
   final Color accent;
 
-  const _InfoRow({required this.icon, required this.text, required this.accent});
+  const _InfoRow({
+    required this.icon,
+    required this.text,
+    required this.accent,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -245,7 +266,10 @@ class _ContactFormState extends State<_ContactForm> {
       return;
     }
 
-    setState(() { _sending = true; _error = null; });
+    setState(() {
+      _sending = true;
+      _error = null;
+    });
 
     final dialCode = widget.selectedCountry.dialCode.replaceAll('+', '');
     final email = widget.emailCtrl.text.trim();
@@ -275,7 +299,11 @@ class _ContactFormState extends State<_ContactForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Field(ctrl: widget.nameCtrl, label: 'NOMBRE COMPLETO', hint: 'Juan Pérez'),
+        _Field(
+          ctrl: widget.nameCtrl,
+          label: 'NOMBRE COMPLETO',
+          hint: 'Juan Pérez',
+        ),
         const SizedBox(height: 20),
         _Field(
           ctrl: widget.emailCtrl,
@@ -307,9 +335,13 @@ class _ContactFormState extends State<_ContactForm> {
             onPressed: _sending ? null : _submit,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF25D366),
-              disabledBackgroundColor: const Color(0xFF25D366).withValues(alpha: 0.5),
+              disabledBackgroundColor: const Color(
+                0xFF25D366,
+              ).withValues(alpha: 0.5),
               padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
               elevation: 0,
             ),
             child: _sending
@@ -324,7 +356,11 @@ class _ContactFormState extends State<_ContactForm> {
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.chat_rounded, color: Colors.white, size: 18),
+                      const Icon(
+                        Icons.chat_rounded,
+                        color: Colors.white,
+                        size: 18,
+                      ),
                       const SizedBox(width: 10),
                       Text(
                         'ENVIAR POR WHATSAPP',
@@ -412,7 +448,10 @@ class _PhoneField extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(selectedCountry.flag, style: const TextStyle(fontSize: 20)),
+                    Text(
+                      selectedCountry.flag,
+                      style: const TextStyle(fontSize: 20),
+                    ),
                     const SizedBox(width: 6),
                     Text(
                       selectedCountry.dialCode,
@@ -423,8 +462,11 @@ class _PhoneField extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 4),
-                    const Icon(Icons.expand_more_rounded,
-                        color: Color(0xFF3A4A5C), size: 16),
+                    const Icon(
+                      Icons.expand_more_rounded,
+                      color: Color(0xFF3A4A5C),
+                      size: 16,
+                    ),
                   ],
                 ),
               ),
@@ -442,11 +484,15 @@ class _PhoneField extends StatelessWidget {
                   decoration: InputDecoration(
                     hintText: '5512 3456',
                     hintStyle: GoogleFonts.inter(
-                        color: const Color(0xFF3A4A5C), fontSize: 14),
+                      color: const Color(0xFF3A4A5C),
+                      fontSize: 14,
+                    ),
                     filled: true,
                     fillColor: const Color(0xFF0A1018),
                     contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 14),
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: const BorderSide(color: Color(0xFF1A2535)),
@@ -457,8 +503,10 @@ class _PhoneField extends StatelessWidget {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide:
-                          const BorderSide(color: Color(0xFF25D366), width: 1.5),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF25D366),
+                        width: 1.5,
+                      ),
                     ),
                   ),
                 ),
@@ -504,10 +552,12 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
       _filtered = q.isEmpty
           ? _kCountries
           : _kCountries
-              .where((c) =>
-                  c.name.toLowerCase().contains(query) ||
-                  c.dialCode.contains(query))
-              .toList();
+                .where(
+                  (c) =>
+                      c.name.toLowerCase().contains(query) ||
+                      c.dialCode.contains(query),
+                )
+                .toList();
     });
   }
 
@@ -541,8 +591,11 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
                     const Spacer(),
                     IconButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(Icons.close,
-                          color: Colors.white38, size: 18),
+                      icon: const Icon(
+                        Icons.close,
+                        color: Colors.white38,
+                        size: 18,
+                      ),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
@@ -560,26 +613,30 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
                   decoration: InputDecoration(
                     hintText: 'Buscar país o código...',
                     hintStyle: GoogleFonts.inter(
-                        color: const Color(0xFF3A4A5C), fontSize: 13),
-                    prefixIcon: const Icon(Icons.search_rounded,
-                        color: Color(0xFF3A4A5C), size: 18),
+                      color: const Color(0xFF3A4A5C),
+                      fontSize: 13,
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.search_rounded,
+                      color: Color(0xFF3A4A5C),
+                      size: 18,
+                    ),
                     filled: true,
                     fillColor: const Color(0xFF0A1018),
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide:
-                          const BorderSide(color: Color(0xFF1A2535)),
+                      borderSide: const BorderSide(color: Color(0xFF1A2535)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide:
-                          const BorderSide(color: Color(0xFF1A2535)),
+                      borderSide: const BorderSide(color: Color(0xFF1A2535)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide(
-                          color: widget.accent.withValues(alpha: 0.6)),
+                        color: widget.accent.withValues(alpha: 0.6),
+                      ),
                     ),
                   ),
                 ),
@@ -602,14 +659,18 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 12),
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
                         color: isSelected
                             ? widget.accent.withValues(alpha: 0.08)
                             : Colors.transparent,
                         child: Row(
                           children: [
-                            Text(country.flag,
-                                style: const TextStyle(fontSize: 22)),
+                            Text(
+                              country.flag,
+                              style: const TextStyle(fontSize: 22),
+                            ),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
@@ -683,12 +744,16 @@ class _Field extends StatelessWidget {
           style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle:
-                GoogleFonts.inter(color: const Color(0xFF3A4A5C), fontSize: 14),
+            hintStyle: GoogleFonts.inter(
+              color: const Color(0xFF3A4A5C),
+              fontSize: 14,
+            ),
             filled: true,
             fillColor: const Color(0xFF0A1018),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(color: Color(0xFF1A2535)),
@@ -707,4 +772,3 @@ class _Field extends StatelessWidget {
     );
   }
 }
-

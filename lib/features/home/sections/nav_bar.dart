@@ -1,6 +1,8 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../../config/site_config.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:segurify/config/site_config.dart';
+import 'package:segurify/core/design_system.dart';
 
 class NavBar extends StatelessWidget {
   final SiteConfig config;
@@ -21,8 +23,8 @@ class NavBar extends StatelessWidget {
     if (ctx != null) {
       Scrollable.ensureVisible(
         ctx,
-        duration: const Duration(milliseconds: 600),
-        curve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 800),
+        curve: Curves.fastOutSlowIn,
       );
     }
   }
@@ -31,55 +33,57 @@ class NavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final isWide = MediaQuery.of(context).size.width > 900;
 
-    return Container(
-      height: 70,
-      decoration: BoxDecoration(
-        color: const Color(0xFF070B12).withValues(alpha: 0.96),
-        border: const Border(
-          bottom: BorderSide(color: Color(0xFF1A2535)),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: isWide ? 80 : 20),
-        child: Row(
-          children: [
-            Text(
-              config.companyName.toUpperCase(),
-              style: GoogleFonts.sora(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 2,
-              ),
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: Container(
+          height: 80,
+          decoration: BoxDecoration(
+            color: DesignSystem.background.withOpacity(0.8),
+            border: Border(
+              bottom: BorderSide(color: Colors.white.withOpacity(0.08)),
             ),
-            const Spacer(),
-            if (isWide) ...[
-              ...sections.map(
-                (s) => _NavLink(
-                  label: s.label,
-                  onTap: () => _scrollTo(s.sectionKey),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: isWide ? 80 : 20),
+            child: Row(
+              children: [
+                ShaderMask(
+                  shaderCallback: (bounds) => DesignSystem.primaryGradient.createShader(bounds),
+                  child: Text(
+                    config.companyName.toUpperCase(),
+                    style: DesignSystem.h3.copyWith(
+                      letterSpacing: 2,
+                      fontSize: 22,
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 24),
-              _CtaButton(
-                label: 'Solicitar Cotización',
-                color: config.accentColor,
-                onTap: onCotizaTap,
-              ),
-            ],
-            const SizedBox(width: 16),
-            Tooltip(
-              message: 'Editor del sitio',
-              child: IconButton(
-                onPressed: onEditTap,
-                icon: const Icon(Icons.tune_rounded, size: 22),
-                color: Colors.white54,
-              ),
+                const Spacer(),
+                if (isWide) ...[
+                  ...sections.map(
+                    (s) => _NavLink(
+                      label: s.label,
+                      onTap: () => _scrollTo(s.sectionKey),
+                    ),
+                  ),
+                  const SizedBox(width: 32),
+                  _CtaButton(
+                    label: 'COTIZAR AHORA',
+                    onTap: onCotizaTap,
+                  ),
+                ],
+                const SizedBox(width: 16),
+                _ActionButton(
+                  icon: Icons.tune_rounded,
+                  tooltip: 'Editor del sitio',
+                  onTap: onEditTap,
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
-    );
+    ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2, end: 0);
   }
 }
 
@@ -101,16 +105,74 @@ class _NavLinkState extends State<_NavLink> {
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
+      cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: widget.onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                widget.label,
+                style: DesignSystem.bodyMedium.copyWith(
+                  color: _hovered ? Colors.white : DesignSystem.textSecondary,
+                  fontWeight: _hovered ? FontWeight.w600 : FontWeight.w500,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 4),
+              AnimatedContainer(
+                duration: 200.ms,
+                height: 2,
+                width: _hovered ? 20 : 0,
+                decoration: BoxDecoration(
+                  gradient: DesignSystem.primaryGradient,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CtaButton extends StatefulWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _CtaButton({required this.label, required this.onTap});
+
+  @override
+  State<_CtaButton> createState() => _CtaButtonState();
+}
+
+class _CtaButtonState extends State<_CtaButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: AnimatedContainer(
+        duration: 300.ms,
+        child: ElevatedButton(
+          onPressed: widget.onTap,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: _hovered ? Colors.white : DesignSystem.accent,
+            foregroundColor: _hovered ? DesignSystem.accent : Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: _hovered ? 8 : 0,
+            shadowColor: DesignSystem.accent.withOpacity(0.4),
+          ),
           child: Text(
             widget.label,
-            style: GoogleFonts.sora(
-              color: _hovered ? Colors.white : const Color(0xFF8892A4),
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
+            style: DesignSystem.label.copyWith(
+              color: _hovered ? DesignSystem.accent : Colors.white,
             ),
           ),
         ),
@@ -119,32 +181,34 @@ class _NavLinkState extends State<_NavLink> {
   }
 }
 
-class _CtaButton extends StatelessWidget {
-  final String label;
-  final Color color;
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final String tooltip;
   final VoidCallback onTap;
 
-  const _CtaButton({
-    required this.label,
-    required this.color,
+  const _ActionButton({
+    required this.icon,
+    required this.tooltip,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: onTap,
-      style: OutlinedButton.styleFrom(
-        side: BorderSide(color: color),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-      ),
-      child: Text(
-        label,
-        style: GoogleFonts.sora(
-          color: color,
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.white.withOpacity(0.1)),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, size: 20, color: DesignSystem.textSecondary),
+          ),
         ),
       ),
     );

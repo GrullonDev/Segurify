@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../config/site_config.dart';
+import 'package:segurify/config/site_config.dart';
 
 class EditPanel extends StatefulWidget {
   final SiteConfig config;
